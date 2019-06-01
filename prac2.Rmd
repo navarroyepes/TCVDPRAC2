@@ -1,0 +1,162 @@
+---
+title: "Práctica 2: Limpieza y validación de los datos"
+author:
+- Fiol Bibiloni, Andreu
+- Navarro Yepes, José Andrés
+date: "11 de junio de 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+# 1. Descripción del *datatset*
+
+```{r}
+# Downloading the files of the competition
+system("kaggle competitions download -c titanic")
+
+# Loading the training file
+data <- read.csv("train.csv")
+attach(data)
+```
+
+El dataset escogido es llamado *Titanic*, obtenido de la página web de Kaggle (https://www.kaggle.com/c/titanic). Es un dataset recomendado por el enunciado de esta práctica, y sirve para la competición *Titanic: Machine Learning from Disaster*, organizada por la propia página y enmarcada en la categoría *Getting Started Prediction Competition*.
+
+Es un dataset con:
+```{r}
+str(data)
+summary(data)
+```
+
+
+
+
+# 2. Integración y selección de los datos de interés
+
+
+
+```{r}
+data$Survived <- as.logical(Survived)
+data$Pclass <- as.ordered(Pclass)
+str(data)
+```
+
+# 3. *Data cleaning*
+
+```{r}
+
+```
+
+## 3.1. Elementos vacíos
+
+```{r}
+which(is.na(data))
+which(is.na(colnames(data)))
+```
+
+## 3.2. *Outliers*
+
+
+Veamos el boxplot para la edad:
+```{r}
+boxplot(Age)
+```
+
+Observamos que, aunque
+
+```{r}
+boxplot(SibSp)
+```
+
+De nuevo, aunque tenemos ciertos valores extremos, niguno se sale de lo que es razonablemente admisible, por lo que dejaremos los valores.
+
+Veamos por último el boxplot para el número de padres e hijos:
+
+```{r}
+boxplot(Parch)
+```
+
+Una vez más nos encontramos con valores asumibles.
+Concluimos, pues, que en nuestro dataset no hemos hallado la necesidad de actuar sobre los valores extremos.
+
+# 4. *Data analysis*
+
+```{r}
+
+```
+
+## 4.1. Planifación de los análisis
+
+```{r}
+
+```
+
+## 4.2. Normalidad y homocedasticidad
+
+```{r}
+hist(Age)
+shapiro.test(Age)
+qqnorm(Age)
+```
+
+```{r}
+hist(SibSp)
+shapiro.test(SibSp)
+qqnorm(SibSp)
+```
+
+```{r}
+hist(Parch)
+shapiro.test(Parch)
+qqnorm(Parch)
+```
+
+## 4.3. Pruebas estadísticas
+
+```{r}
+
+```
+
+### 4.3.1. 
+
+```{r}
+
+```
+
+### 4.3.2. 
+
+```{r}
+
+```
+
+### 4.3.3. 
+
+```{r}
+
+```
+
+# 5. Representación visual de los resultados
+
+```{r}
+
+```
+
+# 6. Conclusiones
+
+```{r}
+
+```
+
+# 7. Código
+
+```{r, echo= T}
+
+```
+
+# 8. Referencias
+
+Calvo, M., Subirats, L., & Pérez, D. (2019). Introducción a la limpieza y análisis de los datos. Barcelona: UOC.
+
+Kaggle. Titanic: Machine Learning from Disaster. (https://www.kaggle.com/c/titanic) [Consulta: 1 de junio de 2019]
