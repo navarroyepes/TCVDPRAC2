@@ -4,7 +4,7 @@
 * Navarro Yepes, José Andrés navarroyepes@gmail.com
 * Fiol Bibiloni, Andreu      andreufiol@hotmail.com
 # Breve Descripción
-Este proyecto de preprocesado y análisis del dataset del Titanic forma parte de una entrega para la asignatura de Tipología y Ciclo de Vida del dato para el [master en Data Science](https://estudios.uoc.edu/es/masters-universitarios/data-science/presentacion=) de la [UOC](https://www.uoc.edu/portal/es/index.html) con la correción y revisión de Mireia Calvo Gonzalez
+Este proyecto de preprocesado y análisis del dataset del [Titanic](https://www.kaggle.com/c/titanic) forma parte de una entrega para la asignatura de Tipología y Ciclo de Vida del dato para el [master en Data Science](https://estudios.uoc.edu/es/masters-universitarios/data-science/presentacion=) de la [UOC](https://www.uoc.edu/portal/es/index.html) con la correción y revisión de Mireia Calvo Gonzalez
 # Dataset
 
 # Licencia
