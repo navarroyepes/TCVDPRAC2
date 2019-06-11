@@ -9,54 +9,113 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
+library(missForest)
+library(knitr)
 ```
 
 # 1. Descripción del *datatset*
 
+El dataset escogido es llamado *Titanic*, obtenido de la página web de Kaggle (https://www.kaggle.com/c/titanic). Es un dataset recomendado por el enunciado de esta práctica, y sirve para la competición *Titanic: Machine Learning from Disaster*, organizada por la propia página y enmarcada en la categoría *Getting Started Prediction Competition*.
+Para su descarga hemos utilizado la API de Kaggle, que funciona con Python 3.
+
 ```{r}
-# Downloading the files of the competition
+# Downloading the files of the competition. We need the Kaggle API (works with Python 3)
 system("kaggle competitions download -c titanic")
 
 # Loading the training file
-data <- read.csv("train.csv")
-attach(data)
+trainData <- read.csv("train.csv")
+
+# Loading the test file
+testData <- read.csv("test.csv")
 ```
 
-El dataset escogido es llamado *Titanic*, obtenido de la página web de Kaggle (https://www.kaggle.com/c/titanic). Es un dataset recomendado por el enunciado de esta práctica, y sirve para la competición *Titanic: Machine Learning from Disaster*, organizada por la propia página y enmarcada en la categoría *Getting Started Prediction Competition*.
+Es un dataset que está ya dividido en dos partes: una de entrenamiento y otra de prueba. Veamos las características del grupo de entrenamiento.
 
-Es un dataset con:
 ```{r}
-str(data)
-summary(data)
+str(trainData)
+summary(trainData)
 ```
 
+Veamos ahora las características del grupo de prueba:
 
+```{r}
+str(testData)
+summary(testData)
+```
 
+Como podemos comprobar, el conjunto de prueba carece de la variable objetivo *Survived*. Por lo tanto, nuestro objetivo será predecir correctamente si los pasajeros del grupo de prueba sobrevivieron o no, a partir de sus datos. 
 
 # 2. Integración y selección de los datos de interés
 
 
 
 ```{r}
-data$Survived <- as.logical(Survived)
-data$Pclass <- as.ordered(Pclass)
+data <- merge(trainData, testData, all = T)
 str(data)
+summary(data)
+```
+
+Pasamos ahora a seleccionar los datos que nos interesan.
+
+```{r}
+data <- data[, c(-1, -3, -8, -10)]
+str(data)
+summary(data)
 ```
 
 # 3. *Data cleaning*
 
 ```{r}
-
+data$Pclass <- as.ordered(data$Pclass)
+data$Survived <- as.logical(data$Survived)
+str(data)
 ```
 
 ## 3.1. Elementos vacíos
 
 ```{r}
-which(is.na(data))
-which(is.na(colnames(data)))
+# comprueba las variables con valores perdidos 
+names(which(sapply(data, anyNA)))
+
+# imputaci?n
+mydata <- missForest(data, variablewise = T)
+
+# comprueba que ya no hay valores perdidos
+which(is.na(mydata))
+
+
+
+
+
+#grafico entre pclass y fare!!!!!!!!!!!!!!! correlación??????? cual dejamos??? yo: FARe
+
+# Pensar Box-Cox, p23
+
 ```
 
+
+```{r}
+#attach(mydata$ximp)
+```
+
+
+```{r}
+datai <- mydata$ximp
+# asigna un vector con el n?mero de registro de los valores perdidos
+#lostA <- which(is.na(data$Age))
+#lostF <- which(is.na(data$Fare))
+#lostS <- which(is.na(data$Survived))
+#kable(data.frame(Registros = lostA, Edad_imputada = mydata$ximp[lostA, 3]))
+#kable(data.frame(Registros = lostF, Precio_imputado = mydata$ximp[lostF, 6]))
+#kable(data.frame(Registros = nrow(data), Sobrevive = mydata$ximp[, 8]))
+```
+
+
 ## 3.2. *Outliers*
+
+```{r}
+attach(datai)
+```
 
 
 Veamos el boxplot para la edad:
@@ -72,20 +131,35 @@ boxplot(SibSp)
 
 De nuevo, aunque tenemos ciertos valores extremos, niguno se sale de lo que es razonablemente admisible, por lo que dejaremos los valores.
 
-Veamos por último el boxplot para el número de padres e hijos:
+Veamos también el boxplot para el número de padres e hijos:
 
 ```{r}
 boxplot(Parch)
 ```
 
 Una vez más nos encontramos con valores asumibles.
+POr último observaremos el boxplot para el precio del billete
+
+```{r}
+boxplot(Fare)
+
+```
+
+A pesar del gran número de valores extremos, se trata de una caraterística de los precios en presencia de bienes de lujo
+
 Concluimos, pues, que en nuestro dataset no hemos hallado la necesidad de actuar sobre los valores extremos.
+
 
 # 4. *Data analysis*
 
-```{r}
+Disponemos finalmente de un conjunto de datos *limpio* sobre el que realizar análisis de datos.  
 
+```{r}
+summary(datai)
+str(datai)
 ```
+
+Observamos que, al imputar valores con *missForest* a la variable lógica *Survived*, ésta se ha convertido al tipo numérico (reflejando la probabilidad de éxito en cada caso)
 
 ## 4.1. Planifación de los análisis
 
@@ -111,6 +185,12 @@ qqnorm(SibSp)
 hist(Parch)
 shapiro.test(Parch)
 qqnorm(Parch)
+```
+
+```{r}
+hist(data$Fare)
+shapiro.test(data$Fare)
+qqnorm(data$Fare)
 ```
 
 ## 4.3. Pruebas estadísticas
